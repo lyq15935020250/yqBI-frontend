@@ -1,19 +1,19 @@
 import Footer from '@/components/Footer';
-import { listChartByPageUsingPost } from '@/services/yqbi/chartController';
-import { getLoginUserUsingGet, userLoginUsingPost } from '@/services/yqbi/userController';
+import { userRegisterUsingPost } from '@/services/yqbi/userController';
 import { Link } from '@@/exports';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { LoginForm, ProFormText } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
-import { Helmet, history, useModel } from '@umijs/max';
+import { Helmet, history } from '@umijs/max';
 import { message, Tabs } from 'antd';
-import React, { useEffect, useState } from 'react';
-import { flushSync } from 'react-dom';
+import React, { useState } from 'react';
 import Settings from '../../../../config/defaultSettings';
 
-const Login: React.FC = () => {
+/*
+用户注册页面
+ */
+const Register: React.FC = () => {
   const [type, setType] = useState<string>('account');
-  const { initialState, setInitialState } = useModel('@@initialState');
   const containerClassName = useEmotionCss(() => {
     return {
       display: 'flex',
@@ -26,44 +26,19 @@ const Login: React.FC = () => {
     };
   });
 
-  useEffect(() => {
-    listChartByPageUsingPost({}).then((res) => {
-      console.error('res', res);
-    });
-  });
-
-  /**
-   * 登陆成功后，获取用户登录信息
-   */
-  const fetchUserInfo = async () => {
-    const userInfo = await getLoginUserUsingGet();
-    if (userInfo) {
-      flushSync(() => {
-        setInitialState((s) => ({
-          ...s,
-          currentUser: userInfo,
-        }));
-      });
-    }
-  };
-
-  const handleSubmit = async (values: API.UserLoginRequest) => {
+  const handleSubmit = async (values: API.UserRegisterRequest) => {
     try {
-      // 登录
-      const res = await userLoginUsingPost(values);
-      if (res.code === 0) {
-        const defaultLoginSuccessMessage = '登录成功！';
-        message.success(defaultLoginSuccessMessage);
-        await fetchUserInfo();
-        const urlParams = new URL(window.location.href).searchParams;
-        history.push(urlParams.get('redirect') || '/');
-        return;
-      } else {
-        message.error(res.message);
-      }
-    } catch (error) {
-      const defaultLoginFailureMessage = '登录失败，请重试！';
-      console.log(error);
+      // 注册
+      await userRegisterUsingPost({
+        ...values,
+      });
+
+      const defaultRegisterSuccessMessage = '注册成功！';
+      message.success(defaultRegisterSuccessMessage);
+      history.push('/user/login');
+      return;
+    } catch (error: any) {
+      const defaultLoginFailureMessage = '注册失败，请重试！';
       message.error(defaultLoginFailureMessage);
     }
   };
@@ -71,7 +46,7 @@ const Login: React.FC = () => {
     <div className={containerClassName}>
       <Helmet>
         <title>
-          {'登录'}- {Settings.title}
+          {'注册'}- {Settings.title}
         </title>
       </Helmet>
       <div
@@ -103,7 +78,7 @@ const Login: React.FC = () => {
             items={[
               {
                 key: 'account',
-                label: '账户密码登录',
+                label: '新用户注册',
               },
             ]}
           />
@@ -137,6 +112,20 @@ const Login: React.FC = () => {
                   },
                 ]}
               />
+              <ProFormText.Password
+                name="checkPassword"
+                fieldProps={{
+                  size: 'large',
+                  prefix: <LockOutlined />,
+                }}
+                placeholder={'请确认密码'}
+                rules={[
+                  {
+                    required: true,
+                    message: '密码是必填项！',
+                  },
+                ]}
+              />
             </>
           )}
           <div
@@ -144,7 +133,7 @@ const Login: React.FC = () => {
               marginBottom: 24,
             }}
           >
-            <Link to="/user/register">新用户注册</Link>
+            <Link to="/user/login">老用户登录</Link>
           </div>
         </LoginForm>
       </div>
@@ -152,4 +141,4 @@ const Login: React.FC = () => {
     </div>
   );
 };
-export default Login;
+export default Register;

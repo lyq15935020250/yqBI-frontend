@@ -1,6 +1,6 @@
 import Footer from '@/components/Footer';
 import { Question } from '@/components/RightContent';
-import { getLoginUserUsingGET } from '@/services/yubi/userController';
+import { getLoginUserUsingGet } from '@/services/yqbi/userController';
 import { LinkOutlined } from '@ant-design/icons';
 import { SettingDrawer } from '@ant-design/pro-components';
 import type { RunTimeLayoutConfig } from '@umijs/max';
@@ -19,7 +19,7 @@ export async function getInitialState(): Promise<{
 }> {
   const fetchUserInfo = async () => {
     try {
-      const res = await getLoginUserUsingGET();
+      const res = await getLoginUserUsingGet();
       return res.data;
     } catch (error) {
       history.push(loginPath);
