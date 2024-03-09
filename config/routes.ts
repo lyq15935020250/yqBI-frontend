@@ -9,6 +9,7 @@
   },
   { path: '/', redirect: '/add_chart' },
   { name: '智能分析', path: '/add_chart', icon: 'barChart', component: './AddChart' },
+  { name: '我的图标', path: '/my_chart', icon: 'pieChart', component: './MyChart' },
   {
     path: '/admin',
     icon: 'crown',
