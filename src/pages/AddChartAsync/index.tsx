@@ -1,4 +1,4 @@
-import {genChartByAiAsyncUsingPost} from '@/services/yqbi/chartController';
+import {genChartByAiAsyncMqUsingPost} from '@/services/yqbi/chartController';
 import {UploadOutlined} from '@ant-design/icons';
 import {Button, Card, Form, Input, message, Select, Space, Upload} from 'antd';
 import TextArea from 'antd/es/input/TextArea';
@@ -29,7 +29,8 @@ const AddChartAsync: React.FC = () => {
       file: undefined,
     };
     try {
-      const res = await genChartByAiAsyncUsingPost(params, {}, values.file.file.originFileObj);
+      // const res = await genChartByAiAsyncUsingPost(params, {}, values.file.file.originFileObj);
+      const res = await genChartByAiAsyncMqUsingPost(params, {}, values.file.file.originFileObj);
       if (!res?.data) {
         message.error('分析失败');
       } else {
